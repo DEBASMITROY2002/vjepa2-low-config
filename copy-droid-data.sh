@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# ./copy-droid-data.sh \
+# sh ./copy-droid-data.sh \
 #   -m list \
 #   -s "gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/" \
 #   -n 5
 
 
-# ./copy-droid-data.sh \
+# sh ./copy-droid-data.sh \
 #   -m copy \
 #   -s "gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/" \
 #   -d "mydroiddata/dataset/droid_raw/1.0.1/GuptaLab/success/2023-04-20" \
@@ -50,13 +50,13 @@ while getopts "m:s:d:n:h" opt; do
 done
 
 # Validation
-if [[ -z "$MODE" || -z "$SOURCE_BUCKET" ]]; then
+if [ -z "$MODE" ] || [ -z "$SOURCE_BUCKET" ]; then
     echo "Error: Mode (-m) and Source (-s) are required."
     usage
 fi
 
 # Logic for 'list' mode
-if [[ "$MODE" == "list" ]]; then
+if [ "$MODE" = "list" ]; then
     echo "Listing first $COUNT items from: $SOURCE_BUCKET"
     echo "------------------------------------------------"
     gsutil ls "$SOURCE_BUCKET" | head -n "$COUNT"
@@ -64,8 +64,8 @@ if [[ "$MODE" == "list" ]]; then
 fi
 
 # Logic for 'copy' mode
-if [[ "$MODE" == "copy" ]]; then
-    if [[ -z "$DEST_DIR" ]]; then
+if [ "$MODE" = "copy" ]; then
+    if [ -z "$DEST_DIR" ]; then
         echo "Error: Destination directory (-d) is required for copy mode."
         exit 1
     fi
@@ -80,7 +80,7 @@ if [[ "$MODE" == "copy" ]]; then
     # 2. Get list of trajectories
     TRAJECTORIES=$(gsutil ls "$SOURCE_BUCKET" | head -n "$COUNT")
 
-    if [[ -z "$TRAJECTORIES" ]]; then
+    if [ -z "$TRAJECTORIES" ]; then
         echo "Error: No trajectories found at source."
         exit 1
     fi
