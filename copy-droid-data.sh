@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# ./manage_data.sh \
+# ./copy-droid-data.sh \
 #   -m list \
 #   -s "gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/" \
 #   -n 5
 
 
-# ./manage_data.sh \
+# ./copy-droid-data.sh \
 #   -m copy \
 #   -s "gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/" \
 #   -d "mydroiddata/dataset/droid_raw/1.0.1/GuptaLab/success/2023-04-20" \
