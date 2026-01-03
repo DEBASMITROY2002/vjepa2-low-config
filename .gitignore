@@ -34,3 +34,4 @@ configs/local
 .venv
 datasets/
 mydroiddata/droid-256px-8f
+mydroiddata/dataset
