@@ -9,6 +9,7 @@ line-length = 119
 dev = [
     "beartype>=0.22.2",
     "braceexpand>=0.1.7",
+    "colorlog>=6.10.1",
     "decord2>=3.0.0",
     "einops>=0.8.1",
     "fire>=0.7.1",
