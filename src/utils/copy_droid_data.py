@@ -86,69 +86,40 @@ def list_trajectories(source_bucket, count, python_path=None):
         return []
 
 
-def copy_trajectories(source_bucket, dest_dir, count, python_path=None):
-    """Download N trajectories from GCS to local directory.
+def copy_trajectories(source_bucket, dest_dir, python_path=None):
+    """Download trajectories from GCS to local directory.
     
     Args:
         source_bucket (str): GCS bucket path, e.g., 'gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/'
         dest_dir (str): Local destination directory, e.g., 'mydroiddata/dataset/droid_raw/1.0.1/GuptaLab/success/2023-04-20'
-        count (int): Number of trajectories to download, e.g., 3
     
     Example:
         copy_trajectories(
             'gs://gresearch/robotics/droid_raw/1.0.1/GuptaLab/success/2023-04-20/',
-            'mydroiddata/dataset/droid_raw/1.0.1/GuptaLab/success/2023-04-20',
-            3
+            'mydroiddata/dataset/droid_raw/1.0.1/GuptaLab/success/2023-04-20'
         )
     """
-    print(f"Preparing to download {count} trajectories...")
+    print(f"Preparing to download trajectories...")
     print(f"Source: {source_bucket}")
     print(f"Dest:   {dest_dir}")
-    
-    # 1. Create destination root directory
-    dest_path = Path(dest_dir)
-    dest_path.mkdir(parents=True, exist_ok=True)
-    
-    # 2. Get list of trajectories
-    cmd = f'gsutil ls "{source_bucket}" | head -n {count}'
+
+    rsync_cmd = f'gsutil -m rsync -r -x ".*\\.svo$" "{source_bucket}" "{dest_dir}"'
     if python_path:
-        cmd = f'CLOUDSDK_PYTHON={python_path} gsutil ls "{source_bucket}" | head -n {count}'
-    stdout, stderr, returncode = run_command(cmd)
-    
-    if not stdout:
-        print("Error: No trajectories found at source.")
-        sys.exit(1)
-    
-    trajectories = stdout.strip().split('\n')
-    
-    # 3. Loop and sync each trajectory
-    for traj in trajectories:
-        if not traj:
-            continue
-            
-        # Extract folder name (remove trailing slash)
-        folder_name = traj.rstrip('/').split('/')[-1]
-        target_path = dest_path / folder_name
-        
-        print("-" * 48)
-        print(f"Processing: {folder_name}")
-        
-        # Create the specific sub-folder
-        target_path.mkdir(parents=True, exist_ok=True)
-        
-        # Sync command: Multi-threaded (-m), Recursive (-r), Exclude .svo (-x)
-        rsync_cmd = f'gsutil -m rsync -r -x ".*\\.svo$" "{traj}" "{target_path}"'
-        stdout, stderr, returncode = run_command(rsync_cmd, check=False)
-        
-        if returncode != 0:
-            print(f"Warning: Some errors occurred while syncing {folder_name}")
-            if stderr:
-                print(f"Error details: {stderr}")
-        else:
-            print(f"Successfully synced {folder_name}")
-    
-    print("-" * 48)
-    print("Download complete.")
+        rsync_cmd = f'CLOUDSDK_PYTHON={python_path} gsutil -m rsync -r -x ".*\\.svo$" "{source_bucket}" "{dest_dir}"'
+    print(f"Running command: {rsync_cmd}")
+
+    print("Creating destination directory if it doesn't exist...")
+    Path(dest_dir).mkdir(parents=True, exist_ok=True)
+
+    stdout, stderr, returncode = run_command(rsync_cmd, check=False)
+    if returncode != 0:
+        print(f"Warning: Some errors occurred during sync.")
+        if stderr:
+            print(f"Error details: {stderr}")
+    else:
+        print("Successfully synced trajectories.")
+    print("Sync complete.")
+
 
 
 def main():
