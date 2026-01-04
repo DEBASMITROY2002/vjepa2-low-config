@@ -107,6 +107,10 @@ def copy_trajectories(source_bucket, dest_dir, python_path=None):
     if python_path:
         rsync_cmd = f'CLOUDSDK_PYTHON={python_path} gsutil -m rsync -r -x ".*\\.svo$" "{source_bucket}" "{dest_dir}"'
     print(f"Running command: {rsync_cmd}")
+
+    print("Creating destination directory if it doesn't exist...")
+    Path(dest_dir).mkdir(parents=True, exist_ok=True)
+
     stdout, stderr, returncode = run_command(rsync_cmd, check=False)
     if returncode != 0:
         print(f"Warning: Some errors occurred during sync.")
