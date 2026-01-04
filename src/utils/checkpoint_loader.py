@@ -11,9 +11,12 @@ from typing import Any
 import torch
 from torch.serialization import MAP_LOCATION
 
-from src.utils.logging import get_logger
+# from src.utils.logging import get_logger
 
-logger = get_logger(os.path.basename(__file__))
+# logger = get_logger(os.path.basename(__file__))
+
+from src.utils.my_logger import get_colorlogger
+logger = get_colorlogger(name="checkpoint-loader")
 
 
 def robust_checkpoint_loader(r_path: str, map_location: MAP_LOCATION = "cpu", max_retries: int = 3) -> Any:
@@ -24,6 +27,7 @@ def robust_checkpoint_loader(r_path: str, map_location: MAP_LOCATION = "cpu", ma
 
     while retries < max_retries:
         try:
+            logger.info(f"Loading checkpoint from {r_path}, attempt {retries + 1}/{max_retries}")
             return torch.load(r_path, map_location=map_location)
         except Exception as e:
             logger.warning(f"Encountered exception when loading checkpoint {e}")
