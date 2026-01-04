@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import logging
+# import logging
 import sys
 
 import torch
@@ -15,8 +15,11 @@ import src.models.vision_transformer as video_vit
 from src.utils.checkpoint_loader import robust_checkpoint_loader
 from src.utils.schedulers import CosineWDSchedule, WSDSchedule
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-logger = logging.getLogger()
+# logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+# logger = logging.getLogger()
+
+from src.utils.my_logger import get_colorlogger
+logger = get_colorlogger(name="train-droid")
 
 
 def load_pretrained(

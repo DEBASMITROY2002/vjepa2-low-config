@@ -7,9 +7,9 @@
 
 import json
 import os
-from logging import getLogger
+from src.utils.my_logger import get_colorlogger
+logger = get_colorlogger(name="train-droid")
 from math import ceil
-
 import h5py
 import numpy as np
 import pandas as pd
@@ -19,7 +19,7 @@ from decord import VideoReader, cpu
 from scipy.spatial.transform import Rotation
 
 _GLOBAL_SEED = 0
-logger = getLogger()
+# logger = getLogger()
 
 
 def init_data(
