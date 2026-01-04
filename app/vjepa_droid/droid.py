@@ -7,9 +7,9 @@
 
 import json
 import os
-from logging import getLogger
+from src.utils.my_logger import get_colorlogger
+logger = get_colorlogger(name="train-droid")
 from math import ceil
-
 import h5py
 import numpy as np
 import pandas as pd
@@ -19,7 +19,7 @@ from decord import VideoReader, cpu
 from scipy.spatial.transform import Rotation
 
 _GLOBAL_SEED = 0
-logger = getLogger()
+# logger = getLogger()
 
 
 def init_data(
@@ -98,7 +98,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         transform=None,
         camera_frame=False,
     ):
-        print("DROIDVideoDataset: Initializing")
+        # print("DROIDVideoDataset: Initializing")
         self.data_path = data_path
         self.frames_per_clip = frames_per_clip
         self.frameskip = frameskip
@@ -120,7 +120,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         self.samples = samples
 
     def __getitem__(self, index):
-        print(f"DROIDVideoDataset: Getting item at index {index}")
+        # print(f"DROIDVideoDataset: Getting item at index {index}")
         path = self.samples[index]
 
         # -- keep trying to load videos until you find a valid sample
@@ -138,7 +138,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         return buffer, actions, states, extrinsics, indices
 
     def poses_to_diffs(self, poses):
-        print("DROIDVideoDataset: Calculating pose differences")
+        # print("DROIDVideoDataset: Calculating pose differences")
         xyz = poses[:, :3]  # shape [T, 3]
         thetas = poses[:, 3:6]  # euler angles, shape [T, 3]
         matrices = [Rotation.from_euler("xyz", theta, degrees=False).as_matrix() for theta in thetas]
@@ -151,7 +151,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         return np.concatenate([xyz_diff, angle_diff, closedness_delta], axis=1)
 
     def transform_frame(self, poses, extrinsics):
-        print("DROIDVideoDataset: Transforming frame")
+        # print("DROIDVideoDataset: Transforming frame")
         gripper = poses[:, -1:]
         poses = poses[:, :-1]
 
@@ -181,7 +181,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         return np.concatenate([new_pose, gripper], axis=1)
 
     def loadvideo_decord(self, path):
-        print(f"DROIDVideoDataset: Loading video from {path}")
+        # print(f"DROIDVideoDataset: Loading video from {path}")
         # -- load metadata
         metadata = get_json(path)
         if metadata is None:
@@ -229,7 +229,7 @@ class DROIDVideoDataset(torch.utils.data.Dataset):
         # --
         vr.seek(0)  # go to start of video before sampling frames
         buffer = vr.get_batch(indices).asnumpy()
-        print(f"DROIDVideoDataset: Buffer shape after loading: {buffer.shape}")
+        # print(f"DROIDVideoDataset: Buffer shape after loading: {buffer.shape}")
         if self.transform is not None:
             buffer = self.transform(buffer)
 

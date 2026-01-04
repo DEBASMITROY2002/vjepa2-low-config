@@ -4,12 +4,12 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from logging import getLogger
+# from logging import getLogger
 
 import torch
 
-logger = getLogger()
-
+from src.utils.my_logger import get_colorlogger
+logger = get_colorlogger(name="tensors")
 
 def _no_grad_trunc_normal_(tensor, mean, std, a, b):
     # Cut & paste from PyTorch official master until it's in a few official releases - RW
