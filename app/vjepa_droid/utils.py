@@ -256,3 +256,4 @@ def init_opt(
     )
     scaler = torch.cuda.amp.GradScaler() if mixed_precision else None
     return optimizer, scaler, scheduler, wd_scheduler
+ 

@@ -6,7 +6,7 @@ mem_per_gpu: 22G            # OPTIMIZED: Matches your L4 capacity.
 nodes: 1                    # OPTIMIZED: You are running on a single Colab instance.
 tasks_per_node: 1           # OPTIMIZED: Single process for single GPU.
 data:
-  batch_size: 1            # OPTIMIZED: L4 22GB can handle BS=4 with checkpointing. Increases stability.
+  batch_size: 4            # OPTIMIZED: L4 22GB can handle BS=4 with checkpointing. Increases stability.
   camera_views:
   - left_mp4_path
   crop_size: 224            # OPTIMIZED: Reduced from 256. 224 is standard/faster and saves VRAM.
@@ -16,7 +16,7 @@ data:
     - mydroiddata/dataset/droid_raw/droid_index.csv
   dataset_fpcs:
   - 8
-  fps: 3
+  fps: 6
   num_workers: 0           # OPTIMIZED: Matches low CPU core count on Colab to prevent bottlenecks.
   patch_size: 16
   pin_mem: true
@@ -60,9 +60,9 @@ model:
   use_extrinsics: false
   use_rope: true
 optimization:
-  anneal: 10
-  epochs: 30                # OPTIMIZED: Reduced from 315. Sufficient for a take-home demo.
-  final_lr: 1.0e-06
+  anneal: 0
+  epochs: 100                # OPTIMIZED: Reduced from 315. Sufficient for a take-home demo.
+  final_lr: 0.0001
   final_weight_decay: 0.04
   ipe: 300
   lr: 0.0001                # OPTIMIZED: Scaled down from 4e-4 for smaller batch size (4 vs ~2048).
