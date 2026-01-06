@@ -23,6 +23,7 @@ dev = [
     "opencv-python>=4.11.0.86",
     "pandas>=2.3.3",
     "peft>=0.17.1",
+    "plotly>=6.5.0",
     "psutil>=7.2.1",
     "python-box>=7.3.2",
     "pyyaml>=6.0.3",
